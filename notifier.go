@@ -101,7 +101,7 @@ func newWindowsNotifier() (Notifier, error) {
 		if err := win.RestoreAssets(dir, "notifu.exe"); err != nil {
 			return nil, err
 		}
-		fullPath := dir + "notifu.exe"
+		fullPath := dir + "/notifu.exe"
 		return &windowsNotifier{path: fullPath}, nil
 	}
 }
