@@ -13,7 +13,7 @@ func TestOSXNotify(t *testing.T) {
 		log.Println("Not on darwin")
 		return
 	}
-	n, err := osx.newNotifier()
+	n, err := newOSXNotifier()
 	assert.Nil(t, err, "got an error?")
 
 	msg := &Notification{
