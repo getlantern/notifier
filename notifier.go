@@ -31,18 +31,7 @@ type Notification struct {
 	IconURL            string
 	RequireInteraction bool
 	IsClickable        bool
-	Buttons            []*Button
-}
-
-// Button is a button for a notification.
-type Button struct {
-	Title string
-
-	// IconURL is the optional URL to use for the button icon.
-	IconURL string
-
-	// ClickURL is an optional URL to open when the user clicks the button.
-	ClickURL string
+	ClickURL           string
 }
 
 type emptyNotifier struct {

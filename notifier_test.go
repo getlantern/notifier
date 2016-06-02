@@ -17,8 +17,10 @@ func TestOSXNotify(t *testing.T) {
 	assert.Nil(t, err, "got an error?")
 
 	msg := &Notification{
-		Title:   "test",
-		Message: "test",
+		Title:    "Your Lantern time is up",
+		Message:  "You have reached your data cap limit",
+		ClickURL: "https://www.getlantern.org",
+		IconURL:  "http://127.0.0.1:2000/img/lantern_logo.png",
 	}
 	err = n.Notify(msg)
 	assert.Nil(t, err, "got an error notifying user")
@@ -33,9 +35,11 @@ func TestWindowsNotify(t *testing.T) {
 	assert.Nil(t, err, "got an error?")
 
 	msg := &Notification{
-		Title:   "test",
-		Message: "test",
+		Title:    "Your Lantern time is up",
+		Message:  "You have reached your data cap limit",
+		ClickURL: "https://www.getlantern.org",
 	}
 	err = n.Notify(msg)
 	assert.Nil(t, err, "got an error notifying user")
+
 }
