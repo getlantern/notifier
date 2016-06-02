@@ -64,3 +64,28 @@ Use Console.app to view these logs.
 Note that in some circumstances the first character of a message has to be escaped in order to be recognized.
 An example of this is when using an open bracket, which has to be escaped like so: ‘\[’.
 ```
+
+Here are the docs for notifu:
+
+```
+Usage: notifu [@argfile] [/?|h|help] [/v|version] [/t <value>] [/d <value>] [/p <value>] 
+                  /m <value< [/i <value>] [/e]
+
+@argfile        Read arguments from a file.
+
+
+/?              Show usage.
+/v              Show version.
+/t <value>      The type of message to display values are:
+                    info      The message is an informational message
+                    warn      The message is an warning message
+                    error     The message is an error message
+/d <value>      The number of milliseconds to display (omit or 0 for infinit)
+/p <value>      The title (or prompt) of the ballon
+/m <value>      The message text
+/i <value>      Specify an icon to use ("parent" uses the icon of the parent process)
+/e              Enable ballon tips in the registry (for this user only)
+/q              Do not play a sound when the tooltip is displayed
+/w              Show the tooltip even if the user is in the quiet period that follows his very first login (Windows 7 and up)
+/xp             Use IUserNotification interface event when IUserNotification2 is available
+```
