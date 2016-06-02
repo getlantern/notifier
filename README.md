@@ -2,8 +2,8 @@
 A library for sending native desktop notifications from Go. This uses
 platform-specific helper libraries as follows:
 
--OSX: [Terminal Notifier](https://github.com/julienXX/terminal-notifier)
--Windows: [notifu](https://www.paralint.com/projects/notifu/)
+* OSX: [Terminal Notifier](https://github.com/julienXX/terminal-notifier)
+* Windows: [notifu](https://www.paralint.com/projects/notifu/)
 
 Those libraries are embedded directly in Go in this library, so there are no external dependencies or expectations for installations on the user's system. These libraries were also chosen for their small size, particularly in the case of notifu, which is far smaller than things like Growl or Snarl.
 
