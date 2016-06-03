@@ -10,8 +10,8 @@ func main() {
 	n := notify.NewNotifications()
 
 	msg := &notify.Notification{
-		Title:    "Your Lantern time is up",
-		Message:  "You have reached your data cap limit",
+		Title:    "Super Important",
+		Message:  "Free the Internet",
 		ClickURL: "https://www.getlantern.org",
 		//IconURL:  "https://www.getlantern.org",
 	}
