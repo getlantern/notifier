@@ -56,8 +56,10 @@ func platformSpecificNotifier() (Notifier, error) {
 		return newWindowsNotifier()
 	} else if runtime.GOOS == "darwin" {
 		return newOSXNotifier()
+	} else {
+		fmt.Printf("Platform not supported")
+		return &emptyNotifier{}, nil
 	}
-	return nil, fmt.Errorf("Platform not supported %v", runtime.GOOS)
 }
 
 // Notify sends a notification to the user.

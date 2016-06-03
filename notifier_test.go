@@ -8,6 +8,24 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func TestNotify(t *testing.T) {
+	if runtime.GOOS != "darwin" {
+		log.Println("Not on darwin")
+		return
+	}
+
+	n := NewNotifications()
+
+	msg := &Notification{
+		Title:    "Your Lantern time is up",
+		Message:  "You have reached your data cap limit",
+		ClickURL: "https://www.getlantern.org",
+		IconURL:  "http://127.0.0.1:2000/img/lantern_logo.png",
+	}
+	err := n.Notify(msg)
+	assert.Nil(t, err, "got an error notifying user")
+}
+
 func TestOSXNotify(t *testing.T) {
 	if runtime.GOOS != "darwin" {
 		log.Println("Not on darwin")
