@@ -13,7 +13,7 @@ func main() {
 		Title:    "Super Important",
 		Message:  "Free the Internet",
 		ClickURL: "https://www.getlantern.org",
-		//IconURL:  "https://www.getlantern.org",
+		IconURL:  "https://www.getlantern.org/static/images/favicon.png",
 	}
 
 	n.Notify(msg)

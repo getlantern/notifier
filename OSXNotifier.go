@@ -27,7 +27,17 @@ type osxNotifier struct {
 
 // Notify sends a notification to the user.
 func (n *osxNotifier) Notify(msg *Notification) error {
-	cmd := exec.Command(n.path, "-message", msg.Message, "-title", msg.Title, "-open", msg.ClickURL, "-appIcon", msg.IconURL)
+	args := []string{
+		"-message", msg.Message,
+		"-title", msg.Title,
+	}
+	if msg.ClickURL != "" {
+		args = append(args, []string{"-open", msg.ClickURL}...)
+	}
+	if msg.IconURL != "" {
+		args = append(args, []string{"-appIcon", msg.IconURL}...)
+	}
+	cmd := exec.Command(n.path, args...)
 	result, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Errorf("Could not run command %v", err)

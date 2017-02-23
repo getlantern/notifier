@@ -25,14 +25,10 @@ type Notifier interface {
 // is directly modeled after Chrome notifications, as detailed at:
 // https://developer.chrome.com/apps/notifications
 type Notification struct {
-	ID                 string
-	Type               string
-	Title              string
-	Message            string
-	IconURL            string
-	RequireInteraction bool
-	IsClickable        bool
-	ClickURL           string
+	Title    string
+	Message  string
+	IconURL  string
+	ClickURL string
 }
 
 type emptyNotifier struct {
