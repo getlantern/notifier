@@ -12,6 +12,7 @@ func main() {
 	msg := &notify.Notification{
 		Title:    "Super Important",
 		Message:  "Free the Internet",
+		Sender:   "com.getlantern.lantern",
 		ClickURL: "https://www.getlantern.org",
 		IconURL:  "https://www.getlantern.org/static/images/favicon.png",
 	}

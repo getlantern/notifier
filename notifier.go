@@ -2,6 +2,7 @@ package notify
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/getlantern/golog"
 )
@@ -25,10 +26,20 @@ type Notifier interface {
 // is directly modeled after Chrome notifications, as detailed at:
 // https://developer.chrome.com/apps/notifications
 type Notification struct {
-	Title    string
-	Message  string
-	IconURL  string
+	Title   string
+	Message string
+	IconURL string
+	// Sender identifies the application that's sending the notification on OS X
+	// to pick up the appropriate icon (e.g. com.getlantern.lantern). This
+	// overrides whatever is set in IconURL.
+	Sender   string
 	ClickURL string
+	// ClickLabel is the label for the clickable link in OS X notifications (e.g.
+	// "open" or "show")
+	ClickLabel string
+	// AutoDismissAfter governs how quickly notifications on OS X are
+	// automatically dismissed.
+	AutoDismissAfter time.Duration
 }
 
 type emptyNotifier struct {

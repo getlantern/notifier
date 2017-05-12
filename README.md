@@ -16,7 +16,7 @@ go get -u github.com/jteeuwen/go-bindata/...
 Then you can run, for example:
 
 ```
-cd platform/terminal-notifier-1.6.3
+cd platform/terminal-notifier-1.7.1
 go-bindata -pkg osx --nomemcopy -nocompress terminal-notifier.app/...
 mv bindata.go ../../osx
 ```
@@ -76,7 +76,7 @@ An example of this is when using an open bracket, which has to be escaped like s
 Here are the docs for notifu:
 
 ```
-Usage: notifu [@argfile] [/?|h|help] [/v|version] [/t <value>] [/d <value>] [/p <value>] 
+Usage: notifu [@argfile] [/?|h|help] [/v|version] [/t <value>] [/d <value>] [/p <value>]
                   /m <value< [/i <value>] [/e]
 
 @argfile        Read arguments from a file.

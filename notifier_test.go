@@ -13,8 +13,9 @@ func TestNotify(t *testing.T) {
 	msg := &Notification{
 		Title:    "Your Lantern time is up",
 		Message:  "You have reached your data cap limit",
+		Sender:   "com.getlantern.lantern",
 		ClickURL: "https://www.getlantern.org",
-		IconURL:  "http://127.0.0.1:2000/img/lantern_logo.png",
+		IconURL:  "https://www.getlantern.org/static/images/favicon.png",
 	}
 
 	err := n.Notify(msg)
