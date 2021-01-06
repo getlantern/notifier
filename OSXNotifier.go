@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
+	"strings"
 	"time"
 
 	"github.com/getlantern/notifier/osx"
@@ -55,16 +56,18 @@ func (n *osxNotifier) Notify(msg *Notification) error {
 		args = append(args, "-appIcon", msg.IconURL)
 	}
 	cmd := exec.Command(n.path, args...)
-	result, err := cmd.CombinedOutput()
+	res, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Errorf("Could not run command %v", err)
 		return err
 	}
-	log.Debugf("Received result: %v", string(result))
-	if msg.ClickURL != "" {
-		if string(result) == "Open" {
-			open.Start(msg.ClickURL)
-		}
+	result := string(res)
+	log.Debugf("Received result: %v", result)
+
+	// Note we can't just look for the result being the string "Open" here because
+	// it's the label on the button and can be in any language.
+	if msg.ClickURL != "" && result != "" && !strings.Contains(result, "CLOSED") {
+		open.Start(msg.ClickURL)
 	}
 	return nil
 }
