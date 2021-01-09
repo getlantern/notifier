@@ -66,7 +66,7 @@ func (n *osxNotifier) Notify(msg *Notification) error {
 
 	// Note we can't just look for the result being the string "Open" here because
 	// it's the label on the button and can be in any language.
-	if msg.ClickURL != "" && result != "" && !strings.Contains(result, "CLOSED") {
+	if msg.ClickURL != "" && result != "" && !strings.Contains(result, "@") {
 		open.Start(msg.ClickURL)
 	}
 	return nil
