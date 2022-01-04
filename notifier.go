@@ -62,14 +62,23 @@ func NewNotifications() Notifier {
 
 // Notify sends a notification to the user.
 func (n *notifications) Notify(msg *Notification) error {
+	return n.NotifyWithErrorCallback(msg, func(error) {})
+}
+
+// NotifyWithErrorCallback sends a notification to the user and reports the error to the
+// callback function.
+func (n *notifications) NotifyWithErrorCallback(msg *Notification, errorFunc func(error)) error {
 	if len(msg.Message) == 0 {
-		return fmt.Errorf("No message supplied in %v", msg)
+		return fmt.Errorf("no message supplied in %v", msg)
 	}
 	if len(msg.Title) == 0 {
-		return fmt.Errorf("No title supplied in %v", msg)
+		return fmt.Errorf("no title supplied in %v", msg)
 	}
 	go func() {
-		n.notifier.Notify(msg)
+		err := n.notifier.Notify(msg)
+		if err != nil {
+			errorFunc(err)
+		}
 	}()
 	return nil
 }

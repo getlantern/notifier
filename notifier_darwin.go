@@ -1,5 +1,3 @@
-// +build darwin
-
 package notify
 
 import (
@@ -22,15 +20,15 @@ func newNotifier() (Notifier, error) {
 		return nil, err
 	}
 	fullPath := dir + "/terminal-notifier.app/Contents/MacOS/terminal-notifier"
-	return &osxNotifier{path: fullPath}, nil
+	return &darwinNotifier{path: fullPath}, nil
 }
 
-type osxNotifier struct {
+type darwinNotifier struct {
 	path string
 }
 
 // Notify sends a notification to the user.
-func (n *osxNotifier) Notify(msg *Notification) error {
+func (n *darwinNotifier) Notify(msg *Notification) error {
 	timeout := msg.AutoDismissAfter
 	if timeout <= 0 {
 		timeout = 15 * time.Second
@@ -58,7 +56,7 @@ func (n *osxNotifier) Notify(msg *Notification) error {
 	cmd := exec.Command(n.path, args...)
 	res, err := cmd.CombinedOutput()
 	if err != nil {
-		log.Errorf("Could not run command %v", err)
+		log.Errorf("Could not run command %w", err)
 		return err
 	}
 	result := string(res)
