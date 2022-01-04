@@ -20,6 +20,10 @@ type notifications struct {
 type Notifier interface {
 	// Notify sends a notification to the user.
 	Notify(*Notification) error
+
+	// NotifyWithErrorCallback sends a notification to the user and reports the error to the
+	// callback function.
+	NotifyWithErrorCallback(*Notification, func(error)) error
 }
 
 // Notification contains data for notifying the user about something. This
@@ -45,8 +49,13 @@ type Notification struct {
 type emptyNotifier struct {
 }
 
-// Notify sends a notification to the user.
+// Notify is a no op for the emptyNotifier
 func (n *emptyNotifier) Notify(msg *Notification) error {
+	return nil
+}
+
+// NotifyWithErrorCallback is a no op for the emptyNotifier
+func (n *emptyNotifier) NotifyWithErrorCallback(msg *Notification, errorFunc func(error)) error {
 	return nil
 }
 
