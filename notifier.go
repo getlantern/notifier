@@ -13,17 +13,14 @@ var (
 
 // notifications is an internal representation of the Notifier interface.
 type notifications struct {
-	notifier Notifier
+	notifier  Notifier
+	errorFunc func(error)
 }
 
 // Notifier is an interface for sending notifications to the user.
 type Notifier interface {
 	// Notify sends a notification to the user.
 	Notify(*Notification) error
-
-	// NotifyWithErrorCallback sends a notification to the user and reports the error to the
-	// callback function.
-	NotifyWithErrorCallback(*Notification, func(error)) error
 }
 
 // Notification contains data for notifying the user about something. This
@@ -54,39 +51,34 @@ func (n *emptyNotifier) Notify(msg *Notification) error {
 	return nil
 }
 
-// NotifyWithErrorCallback is a no op for the emptyNotifier
-func (n *emptyNotifier) NotifyWithErrorCallback(msg *Notification, errorFunc func(error)) error {
-	return nil
-}
-
 // NewNotifications creates a new Notifier that can notify the user about stuff.
 func NewNotifications() Notifier {
+	return NewNotificationsWithErrorCallback(func(error) {})
+}
+
+// NewNotificationsWithErrorCallback creates a new Notifier that can notify
+// the user about stuff and calls the specified error func on errors.
+func NewNotificationsWithErrorCallback(errorFunc func(error)) Notifier {
 	n, err := newNotifier()
 	if err != nil {
 		log.Errorf("Could not create notifier? %v", err)
 		n = &emptyNotifier{}
 	}
-	return &notifications{notifier: n}
+	return &notifications{notifier: n, errorFunc: errorFunc}
 }
 
 // Notify sends a notification to the user.
 func (n *notifications) Notify(msg *Notification) error {
-	return n.NotifyWithErrorCallback(msg, func(error) {})
-}
-
-// NotifyWithErrorCallback sends a notification to the user and reports the error to the
-// callback function.
-func (n *notifications) NotifyWithErrorCallback(msg *Notification, errorFunc func(error)) error {
 	if len(msg.Message) == 0 {
-		return fmt.Errorf("no message supplied in %v", msg)
+		n.errorFunc(fmt.Errorf("no message supplied in %v", msg))
 	}
 	if len(msg.Title) == 0 {
-		return fmt.Errorf("no title supplied in %v", msg)
+		n.errorFunc(fmt.Errorf("no title supplied in %v", msg))
 	}
 	go func() {
 		err := n.notifier.Notify(msg)
 		if err != nil {
-			errorFunc(err)
+			n.errorFunc(err)
 		}
 	}()
 	return nil
