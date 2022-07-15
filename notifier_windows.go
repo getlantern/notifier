@@ -4,12 +4,13 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os/exec"
-
-	"strings"
+	"regexp"
 
 	"github.com/getlantern/notifier/win"
 	"github.com/skratchdot/open-golang/open"
 )
+
+var exitStatusRE = regexp.MustCompile(`exit status (\d+)`)
 
 func newNotifier() (Notifier, error) {
 	if dir, err := ioutil.TempDir("", "notifu-notifier"); err != nil {
@@ -46,12 +47,18 @@ func (n *windowsNotifier) Notify(msg *Notification) error {
 		   8	A new instance of Notifu dismissed a running instace
 		   255	There was some unexpected error.
 		*/
-		if strings.Contains(err.Error(), "status 3") {
-			// The user clicked the notification. Open the click URL.
-			if len(msg.ClickURL) > 0 {
-				open.Run(msg.ClickURL)
+		exitStatus := exitStatusRE.FindStringSubmatch(err.Error())
+		if len(exitStatus) == 2 {
+			switch exitStatus[1] {
+			case "0", "2", "4", "6", "7", "8":
+				return nil
+			case "3":
+				// The user clicked the notification. Open the click URL.
+				if len(msg.ClickURL) > 0 {
+					open.Run(msg.ClickURL)
+				}
+				return nil
 			}
-			return nil
 		}
 		return fmt.Errorf("Notifu returned %v", err)
 	}
