@@ -2,33 +2,48 @@ package notify
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os/exec"
 	"strings"
 	"time"
 
-	"github.com/getlantern/notifier/osx"
 	"github.com/skratchdot/open-golang/open"
 )
 
+const (
+	osascript        = "osascript"
+	terminalNotifier = "terminal-notifier"
+)
+
 func newNotifier() (Notifier, error) {
-	dir, err := ioutil.TempDir("", "terminal-notifier")
-	if err != nil {
-		return nil, err
-	}
-	if err := osx.RestoreAssets(dir, "terminal-notifier.app"); err != nil {
-		return nil, err
-	}
-	fullPath := dir + "/terminal-notifier.app/Contents/MacOS/terminal-notifier"
-	return &darwinNotifier{path: fullPath}, nil
+	return &darwinNotifier{}, nil
 }
 
 type darwinNotifier struct {
 	path string
 }
 
-// Notify sends a notification to the user.
+// Notify sends a desktop notification
+// if terminal-notifier exists, use it. Otherwise, fall back to osascript.
 func (n *darwinNotifier) Notify(msg *Notification) error {
+	if _, err := exec.LookPath(terminalNotifier); err == nil {
+		return n.tnNotify(msg)
+	}
+	return n.osaNotify(msg)
+}
+
+// Notify sends a notification to the user using AppleScript with `osascript` binary
+func (n *darwinNotifier) osaNotify(msg *Notification) error {
+	osa, err := exec.LookPath(osascript)
+	if err != nil {
+		return err
+	}
+
+	script := fmt.Sprintf("display notification %q with title %q", msg.Message, msg.Title)
+	cmd := exec.Command(osa, "-e", script)
+	return cmd.Run()
+}
+
+func (n *darwinNotifier) tnNotify(msg *Notification) error {
 	timeout := msg.AutoDismissAfter
 	if timeout <= 0 {
 		timeout = 15 * time.Second
@@ -53,7 +68,8 @@ func (n *darwinNotifier) Notify(msg *Notification) error {
 	if msg.IconURL != "" {
 		args = append(args, "-appIcon", msg.IconURL)
 	}
-	cmd := exec.Command(n.path, args...)
+	log.Debugf("Running command %s %v", n.path, args)
+	cmd := exec.Command("terminal-notifier", args...)
 	res, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Errorf("Could not run command %w", err)
