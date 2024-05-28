@@ -16,13 +16,7 @@ go get -u github.com/jteeuwen/go-bindata/...
 Then you can run, for example:
 
 ```
-cd platform/terminal-notifier-1.7.1
-go-bindata -pkg osx --nomemcopy -nocompress terminal-notifier.app/...
-mv bindata.go ../../osx
-```
-
-```
-cd platform/notifu-1.6
+cd platform/notifu-1.7.1
 go-bindata -pkg win --nomemcopy -nocompress notifu.exe
 mv bindata.go ../../win
 ```
