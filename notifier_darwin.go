@@ -21,7 +21,7 @@ func newNotifier() (Notifier, error) {
 type darwinNotifier struct{}
 
 // Notify sends a desktop notification
-// if terminal-notifier exists, use it. Otherwise, fall back to osascript.
+// Note: terminal-notifier will be used if it exists; otherwise, fall back to osascript.
 func (n *darwinNotifier) Notify(msg *Notification) error {
 	if _, err := exec.LookPath(terminalNotifier); err == nil {
 		return tnNotify(msg)
@@ -29,7 +29,7 @@ func (n *darwinNotifier) Notify(msg *Notification) error {
 	return osaNotify(msg)
 }
 
-// Notify sends a notification to the user using AppleScript with `osascript` binary
+// osaNotify sends a notification using AppleScript with `osascript` binary
 func osaNotify(msg *Notification) error {
 	osa, err := exec.LookPath(osascript)
 	if err != nil {
@@ -41,6 +41,7 @@ func osaNotify(msg *Notification) error {
 	return cmd.Run()
 }
 
+// tnNotify sends a notification using terminal-notifier
 func tnNotify(msg *Notification) error {
 	timeout := msg.AutoDismissAfter
 	if timeout <= 0 {
