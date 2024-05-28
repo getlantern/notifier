@@ -69,7 +69,6 @@ func tnNotify(msg *Notification) error {
 	if msg.IconURL != "" {
 		args = append(args, "-appIcon", msg.IconURL)
 	}
-	log.Debugf("Running command %s %v", terminalNotifier, args)
 	cmd := exec.Command(terminalNotifier, args...)
 	res, err := cmd.CombinedOutput()
 	if err != nil {
