@@ -16,23 +16,15 @@ go get -u github.com/jteeuwen/go-bindata/...
 Then you can run, for example:
 
 ```
-cd platform/terminal-notifier-1.7.1
-go-bindata -pkg osx --nomemcopy -nocompress terminal-notifier.app/...
-mv bindata.go ../../osx
-```
-
-```
-cd platform/notifu-1.6
+cd platform/notifu-1.7.1
 go-bindata -pkg win --nomemcopy -nocompress notifu.exe
 mv bindata.go ../../win
 ```
 
 This is currently a work in progress and only runs on OSX and Windows and embeds
-all binaries for all platforms instead of dynamically only including the
-required platform at build time, for example.
+binaries for Windows instead of dynamically only including the required platform at build time, for example.
 
-The platform directory is only here to serve as a reference for the native binaries
-being used.
+The platform directory is only here to serve as a reference for the native binaries being used.
 
 For documentation purposes, here are the raw options for terminal-notifier:
 

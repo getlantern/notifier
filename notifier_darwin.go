@@ -2,33 +2,49 @@ package notify
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os/exec"
 	"strings"
 	"time"
 
-	"github.com/getlantern/notifier/osx"
 	"github.com/skratchdot/open-golang/open"
 )
 
+const (
+	osascript        = "osascript"
+	terminalNotifier = "terminal-notifier"
+)
+
 func newNotifier() (Notifier, error) {
-	dir, err := ioutil.TempDir("", "terminal-notifier")
-	if err != nil {
-		return nil, err
-	}
-	if err := osx.RestoreAssets(dir, "terminal-notifier.app"); err != nil {
-		return nil, err
-	}
-	fullPath := dir + "/terminal-notifier.app/Contents/MacOS/terminal-notifier"
-	return &darwinNotifier{path: fullPath}, nil
+	return &darwinNotifier{}, nil
 }
 
-type darwinNotifier struct {
-	path string
-}
+type darwinNotifier struct{}
 
-// Notify sends a notification to the user.
+// Notify sends a desktop notification
+// Note: terminal-notifier will be used if it is installed; otherwise, fall back to osascript.
 func (n *darwinNotifier) Notify(msg *Notification) error {
+	if _, err := exec.LookPath(terminalNotifier); err == nil {
+		return tnNotify(msg)
+	}
+	return osaNotify(msg)
+}
+
+// osaNotify sends a notification using AppleScript with `osascript` binary
+func osaNotify(msg *Notification) error {
+	log.Debug("Sending notification with osascript")
+	osa, err := exec.LookPath(osascript)
+	if err != nil {
+		return err
+	}
+
+	script := fmt.Sprintf("display notification %q with title %q", msg.Message, msg.Title)
+	cmd := exec.Command(osa, "-e", script)
+	return cmd.Run()
+}
+
+// tnNotify sends a notification using terminal-notifier
+func tnNotify(msg *Notification) error {
+	log.Debug("Sending notification with terminal-notifier")
 	timeout := msg.AutoDismissAfter
 	if timeout <= 0 {
 		timeout = 15 * time.Second
@@ -53,7 +69,7 @@ func (n *darwinNotifier) Notify(msg *Notification) error {
 	if msg.IconURL != "" {
 		args = append(args, "-appIcon", msg.IconURL)
 	}
-	cmd := exec.Command(n.path, args...)
+	cmd := exec.Command(terminalNotifier, args...)
 	res, err := cmd.CombinedOutput()
 	if err != nil {
 		log.Errorf("Could not run command %w", err)

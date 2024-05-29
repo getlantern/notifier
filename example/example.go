@@ -3,7 +3,7 @@ package main
 import (
 	"time"
 
-	"github.com/getlantern/notifier"
+	notify "github.com/getlantern/notifier"
 )
 
 func main() {
